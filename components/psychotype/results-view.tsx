@@ -307,9 +307,9 @@ export function ResultsContent({
             className="relative mt-3"
             style={{
               maskImage:
-                "linear-gradient(to bottom, #000 0%, transparent 90%)",
+                "linear-gradient(to bottom, #000 0%, transparent 85%)",
               WebkitMaskImage:
-                "linear-gradient(to bottom, #000 0%, transparent 90%)",
+                "linear-gradient(to bottom, #000 0%, transparent 85%)",
             }}
           >
             <div className="flex flex-col gap-3 blur-[5px]" aria-hidden="true">

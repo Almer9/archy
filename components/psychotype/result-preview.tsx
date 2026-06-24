@@ -1,6 +1,6 @@
 "use client"
 
-import { Lock, Check, Sparkles, TrendingUp, Compass } from "lucide-react"
+import { Check, Sparkles, TrendingUp, Compass, ArrowRight } from "lucide-react"
 import { Reveal } from "./reveal"
 import { CtaButton } from "./cta-button"
 

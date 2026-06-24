@@ -134,7 +134,7 @@ const UI: Record<Language, UIStrings> = {
 
 const TOTAL_QUESTIONS = SCALE_QUESTIONS.en.length + 1 // 10 scale + 1 open = 11
 const MAX_CHARS = 600
-const WARN_CHARS = 500
+const WARN_CHARS = 550
 const MIN_CHARS = 20
 
 /* -------------------------------------------------------------------------- */
@@ -321,37 +321,43 @@ function ScaleQuestion({
         {question}
       </h2>
 
-      {/* scale buttons */}
-      <div className="mt-10 flex items-center justify-center gap-3 sm:gap-4">
-        {SCALE_VALUES.map((value) => {
-          const isSelected = selected === value
-          return (
-            <motion.button
-              key={value}
-              type="button"
-              onClick={() => onSelect(value)}
-              animate={isSelected ? { scale: [0.9, 1.1, 1] } : { scale: 1 }}
-              transition={{ duration: 0.35, ease: "easeOut" }}
-              whileTap={{ scale: 0.9 }}
-              aria-label={`${value}`}
-              aria-pressed={isSelected}
-              className={cn(
-                "flex size-[60px] items-center justify-center rounded-full text-lg font-semibold transition-colors sm:size-[72px] sm:text-xl",
-                isSelected
-                  ? "pt-gradient text-white shadow-[0_0_20px_rgba(139,92,246,0.5)]"
-                  : "border border-pt-border bg-pt-card text-pt-text hover:border-pt-purple/40 hover:bg-white/10",
-              )}
-            >
-              {value}
-            </motion.button>
-          )
-        })}
-      </div>
+      {/* scale buttons + labels (labels sit directly under buttons 1 and 5) */}
+      <div className="mt-10 inline-flex flex-col">
+        <div className="flex items-center justify-center gap-3 sm:gap-4">
+          {SCALE_VALUES.map((value) => {
+            const isSelected = selected === value
+            return (
+              <motion.button
+                key={value}
+                type="button"
+                onClick={() => onSelect(value)}
+                animate={isSelected ? { scale: [0.9, 1.1, 1] } : { scale: 1 }}
+                transition={{ duration: 0.35, ease: "easeOut" }}
+                whileTap={{ scale: 0.9 }}
+                aria-label={`${value}`}
+                aria-pressed={isSelected}
+                className={cn(
+                  "flex size-16 items-center justify-center rounded-full text-lg font-semibold transition-colors sm:size-[72px] sm:text-xl",
+                  isSelected
+                    ? "pt-gradient text-white shadow-[0_0_20px_rgba(139,92,246,0.5)]"
+                    : "border border-pt-border bg-pt-card text-pt-text hover:border-pt-purple/40 hover:bg-white/10",
+                )}
+              >
+                {value}
+              </motion.button>
+            )
+          })}
+        </div>
 
-      {/* scale labels */}
-      <div className="mt-5 flex w-full max-w-[360px] items-center justify-between px-1">
-        <span className="text-[11px] text-pt-muted">{strings.disagree}</span>
-        <span className="text-[11px] text-pt-muted">{strings.agree}</span>
+        {/* labels aligned under the first and last buttons */}
+        <div className="mt-4 flex items-start justify-between">
+          <span className="w-16 text-center text-[11px] leading-tight text-pt-muted sm:w-[72px]">
+            {strings.disagree}
+          </span>
+          <span className="w-16 text-center text-[11px] leading-tight text-pt-muted sm:w-[72px]">
+            {strings.agree}
+          </span>
+        </div>
       </div>
     </div>
   )
@@ -376,9 +382,9 @@ function OpenQuestion({
 }) {
   const strings = UI[language]
   const count = value.length
-  const over = count > WARN_CHARS
-  const blocked = count > MAX_CHARS
-  const canSubmit = count > MIN_CHARS && !blocked && !isSubmitting
+  const atLimit = count >= MAX_CHARS
+  const nearLimit = count >= WARN_CHARS
+  const canSubmit = count >= MIN_CHARS && !isSubmitting
 
   return (
     <div className="flex w-full flex-col items-center">
@@ -394,14 +400,19 @@ function OpenQuestion({
         <textarea
           value={value}
           onChange={(e) => onChange(e.target.value)}
+          maxLength={MAX_CHARS}
           placeholder={strings.openPlaceholder}
-          className="min-h-[140px] w-full resize-none rounded-2xl border border-pt-border bg-pt-card p-4 text-base leading-relaxed text-pt-text placeholder:text-pt-muted/60 focus:border-pt-purple/60 focus:outline-none focus:ring focus:ring-pt-purple/20"
+          className="max-h-[200px] min-h-[140px] w-full resize-none overflow-y-auto rounded-2xl border border-pt-border bg-pt-card p-4 text-base leading-relaxed text-pt-text placeholder:text-pt-muted/60 focus:border-pt-purple/60 focus:outline-none focus:ring focus:ring-pt-purple/20"
         />
         <div className="mt-2 flex items-center justify-end">
           <span
             className={cn(
-              "text-xs tabular-nums",
-              over ? "font-semibold text-red-400" : "text-pt-muted",
+              "text-xs font-medium tabular-nums",
+              atLimit
+                ? "font-semibold text-red-400"
+                : nearLimit
+                  ? "text-amber-400"
+                  : "text-pt-muted",
             )}
           >
             {count} / {MAX_CHARS}
@@ -409,36 +420,33 @@ function OpenQuestion({
         </div>
       </div>
 
-      <AnimatePresence>
-        {count > MIN_CHARS && (
-          <motion.button
-            type="button"
-            onClick={onSubmit}
-            disabled={!canSubmit}
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 12 }}
-            transition={{ duration: 0.3 }}
-            whileTap={canSubmit ? { scale: 0.98 } : undefined}
-            className={cn(
-              "pt-gradient mt-6 flex h-14 w-full max-w-[400px] items-center justify-center gap-2 rounded-full text-base font-semibold text-white shadow-[0_8px_30px_rgba(139,92,246,0.35)] transition-opacity",
-              !canSubmit && "cursor-not-allowed opacity-50",
-            )}
-          >
-            {isSubmitting ? (
-              <>
-                <Loader2 className="size-5 animate-spin" />
-                {strings.analyzing}
-              </>
-            ) : (
-              <>
-                {strings.seeResults}
-                <ArrowRight className="size-5" />
-              </>
-            )}
-          </motion.button>
+      <motion.button
+        type="button"
+        onClick={canSubmit ? onSubmit : undefined}
+        disabled={!canSubmit}
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3 }}
+        whileTap={canSubmit ? { scale: 0.98 } : undefined}
+        className={cn(
+          "mt-6 flex h-14 w-full max-w-[400px] items-center justify-center gap-2 rounded-full text-base font-semibold transition-all",
+          canSubmit
+            ? "pt-gradient text-white shadow-[0_8px_30px_rgba(139,92,246,0.35)]"
+            : "border border-pt-border bg-pt-card text-pt-muted opacity-60",
         )}
-      </AnimatePresence>
+      >
+        {isSubmitting ? (
+          <>
+            <Loader2 className="size-5 animate-spin" />
+            {strings.analyzing}
+          </>
+        ) : (
+          <>
+            {strings.seeResults}
+            <ArrowRight className="size-5" />
+          </>
+        )}
+      </motion.button>
     </div>
   )
 }

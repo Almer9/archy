@@ -27,7 +27,7 @@ export function StickyStart() {
           whileTap={{ scale: 0.95 }}
           className="pt-gradient fixed bottom-5 right-5 z-50 flex h-12 items-center gap-1.5 rounded-full px-5 text-sm font-semibold text-white shadow-[0_8px_30px_rgba(139,92,246,0.5)] sm:hidden"
         >
-          Start
+          Begin
           <ArrowRight className="size-4" />
         </motion.a>
       )}

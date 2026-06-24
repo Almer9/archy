@@ -1,6 +1,6 @@
 "use client"
 
-import { Lock, Check, Sparkles, TrendingUp, Compass } from "lucide-react"
+import { Check, Sparkles, TrendingUp, Compass, ArrowRight } from "lucide-react"
 import { Reveal } from "./reveal"
 import { CtaButton } from "./cta-button"
 
@@ -283,8 +283,9 @@ export function ResultPreview() {
                   />
                 </div>
 
-                {/* RIGHT — Pro (secondary) */}
-                <div className="relative flex flex-col rounded-2xl border border-white/15 bg-white/[0.04] p-6">
+                {/* RIGHT — Pro (secondary) — desktop only */}
+                <div className="relative hidden flex-col overflow-hidden rounded-2xl border border-white/15 bg-white/[0.04] p-6 md:flex">
+                  <div className="pt-gradient absolute inset-x-0 top-0 h-1" />
                   <span className="inline-flex w-fit items-center rounded-full border border-pt-purple/40 bg-pt-purple/10 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide text-pt-purple">
                     Monthly
                   </span>
@@ -319,6 +320,14 @@ export function ResultPreview() {
                   </a>
                 </div>
               </div>
+
+              {/* mobile-only Pro upsell line */}
+              <p className="mt-4 text-center text-sm text-muted-foreground md:hidden">
+                Want monthly growth tracking?{" "}
+                <a href="#" className="pt-gradient-text font-semibold">
+                  Pro — $5.99/mo →
+                </a>
+              </p>
 
               <p className="mt-5 text-center text-xs leading-relaxed text-pt-muted">
                 Or continue free — your archetype and strengths are always

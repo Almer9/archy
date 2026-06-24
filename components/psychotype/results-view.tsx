@@ -7,7 +7,6 @@ import {
   Compass,
   Copy,
   Link2,
-  Lock,
   RotateCcw,
   Sparkles,
   TrendingUp,
@@ -113,19 +112,6 @@ function SectionHeader({
   )
 }
 
-function LockOverlay() {
-  return (
-    <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-2 rounded-xl bg-pt-card/40 backdrop-blur-sm">
-      <span className="flex size-9 items-center justify-center rounded-full pt-gradient shadow-[0_4px_20px_rgba(139,92,246,0.5)]">
-        <Lock className="size-4 text-white" />
-      </span>
-      <span className="text-xs font-semibold text-pt-text">
-        Unlock Full Report
-      </span>
-    </div>
-  )
-}
-
 /* -------------------------------------------------------------------------- */
 /*  OCEAN SCORES                                                              */
 /* -------------------------------------------------------------------------- */
@@ -189,10 +175,14 @@ export function ResultsContent({
       <Reveal>
         <div className="pt-gradient-border relative rounded-2xl p-6 shadow-[0_20px_60px_-20px_rgba(139,92,246,0.7)] sm:p-8">
           <div className="flex flex-col items-center text-center">
-            <span className="text-6xl" role="img" aria-label={archetype.name}>
+            <span
+              className="mb-2 text-6xl sm:text-7xl"
+              role="img"
+              aria-label={archetype.name}
+            >
               {archetype.emoji}
             </span>
-            <h1 className="pt-gradient-text mt-3 text-4xl font-bold sm:text-5xl">
+            <h1 className="pt-gradient-text mt-1 text-4xl font-bold sm:text-5xl">
               {archetype.name}
             </h1>
             <p className="mt-3 max-w-sm text-pretty text-base leading-relaxed text-pt-muted">
@@ -261,29 +251,38 @@ export function ResultsContent({
       <Reveal delay={0.2}>
         <div className="rounded-2xl border border-pt-border bg-pt-card p-6">
           <SectionHeader icon={<TrendingUp className="size-4 text-pt-blue" />}>
-            Growth Areas
+            {`Growth Areas — ${growthAreas.length} identified`}
           </SectionHeader>
-          <div className="mt-4 flex flex-col gap-3">
-            {growthAreas.map((g, i) => (
-              <motion.div
-                key={g.title}
-                initial={{ opacity: 0, y: 16 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-40px" }}
-                transition={{ duration: 0.5, delay: i * 0.1 }}
-                className="relative rounded-xl border border-pt-border bg-white/[0.03] p-4"
-              >
-                {g.locked && <LockOverlay />}
-                <div className={g.locked ? "blur-sm select-none" : undefined}>
-                  <p className="text-base font-semibold text-pt-text">
-                    {g.title}
-                  </p>
-                  <p className="mt-1.5 text-sm leading-relaxed text-pt-muted">
-                    {g.description}
-                  </p>
-                </div>
-              </motion.div>
-            ))}
+
+          <div className="relative mt-4">
+            <div
+              className="rounded-xl border border-pt-border bg-white/[0.03] p-4"
+              style={{
+                maskImage:
+                  "linear-gradient(to bottom, #000 45%, transparent 100%)",
+                WebkitMaskImage:
+                  "linear-gradient(to bottom, #000 45%, transparent 100%)",
+              }}
+            >
+              <p className="text-base font-semibold text-pt-text">
+                {growthAreas[0]?.title}
+              </p>
+              <p className="mt-1.5 text-sm leading-relaxed text-pt-muted">
+                {growthAreas[0]?.description}
+              </p>
+            </div>
+          </div>
+
+          {/* soft paywall insert — feels like content */}
+          <div className="mt-5 flex flex-col items-center gap-4 text-center">
+            <div className="h-px w-full max-w-xs pt-gradient opacity-40" />
+            <p className="max-w-sm text-pretty text-sm leading-relaxed text-pt-text">
+              {`You have ${growthAreas.length} growth areas holding you back. Find out exactly why — and what to do about it.`}
+            </p>
+            <CtaButton
+              className="h-12 w-full max-w-[400px] text-sm"
+              label="Unlock deep analysis — $2.99"
+            />
           </div>
         </div>
       </Reveal>
@@ -344,10 +343,10 @@ export function ResultsContent({
           </div>
           <ul className="mx-auto mt-6 flex max-w-sm flex-col gap-3">
             {[
-              "All 3 growth areas, fully decoded",
-              "A personalized 30-day action plan",
+              "All 3 growth areas fully decoded",
               "All 5 career directions explained",
-              "Famous people with your pattern + PDF export",
+              "Famous people with your pattern",
+              "PDF export of your profile",
             ].map((item) => (
               <li key={item} className="flex items-start gap-3">
                 <span className="mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full bg-white/5">
@@ -373,7 +372,7 @@ export function ResultsContent({
         <div className="rounded-2xl border border-pt-border bg-pt-card p-6 text-center">
           <h3 className="text-lg font-bold text-pt-text">Share your result</h3>
           <p className="mt-1 text-sm text-pt-muted">
-            Send your archetype to a friend and compare.
+            Show your friends what you discovered
           </p>
 
           <button

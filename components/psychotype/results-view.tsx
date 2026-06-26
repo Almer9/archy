@@ -3,7 +3,6 @@
 import { useState } from "react"
 import { motion } from "framer-motion"
 import {
-  ArrowRight,
   Check,
   Compass,
   Copy,
@@ -161,15 +160,15 @@ export function ResultsContent({
   copied,
   onCopy,
   onRetake,
-  takeTestHref,
+  hideShareSection,
 }: {
   result: AnalysisResult
   shareUrl: string | null
   copied: boolean
   onCopy: () => void
   onRetake?: () => void
-  /** When provided (share view), shows a "Take your own test" link instead of Retake. */
-  takeTestHref?: string
+  /** When true (share view), hides the "Share your result" card entirely. */
+  hideShareSection?: boolean
 }) {
   const { archetype, ocean, strengths, growthAreas, careers } = result
 
@@ -372,51 +371,43 @@ export function ResultsContent({
       </Reveal>
 
       {/* 7 — SHARE */}
-      <Reveal delay={0.2}>
-        <div className="rounded-2xl border border-pt-border bg-pt-card p-6 text-center">
-          <h3 className="text-lg font-bold text-pt-text">Share your result</h3>
-          <p className="mt-1 text-sm text-pt-muted">
-            Show your friends what you discovered
-          </p>
+      {!hideShareSection && (
+        <Reveal delay={0.2}>
+          <div className="rounded-2xl border border-pt-border bg-pt-card p-6 text-center">
+            <h3 className="text-lg font-bold text-pt-text">Share your result</h3>
+            <p className="mt-1 text-sm text-pt-muted">
+              Show your friends what you discovered
+            </p>
 
-          <button
-            type="button"
-            onClick={onCopy}
-            className="mt-5 flex w-full items-center gap-3 rounded-xl border border-pt-border bg-white/[0.03] px-4 py-3 text-left transition-colors hover:bg-white/[0.06]"
-          >
-            <Link2 className="size-4 shrink-0 text-pt-muted" />
-            <span className="min-w-0 flex-1 truncate text-sm text-pt-muted">
-              {shareUrl ?? "Generating link..."}
-            </span>
-            <span
-              className={
-                copied
-                  ? "flex shrink-0 items-center gap-1 text-xs font-semibold text-emerald-400"
-                  : "flex shrink-0 items-center gap-1 text-xs font-semibold text-pt-text"
-              }
+            <button
+              type="button"
+              onClick={onCopy}
+              className="mt-5 flex w-full items-center gap-3 rounded-xl border border-pt-border bg-white/[0.03] px-4 py-3 text-left transition-colors hover:bg-white/[0.06]"
             >
-              {copied ? (
-                <>
-                  <Check className="size-3.5" /> copied!
-                </>
-              ) : (
-                <>
-                  <Copy className="size-3.5" /> Copy link
-                </>
-              )}
-            </span>
-          </button>
+              <Link2 className="size-4 shrink-0 text-pt-muted" />
+              <span className="min-w-0 flex-1 truncate text-sm text-pt-muted">
+                {shareUrl ?? "Generating link..."}
+              </span>
+              <span
+                className={
+                  copied
+                    ? "flex shrink-0 items-center gap-1 text-xs font-semibold text-emerald-400"
+                    : "flex shrink-0 items-center gap-1 text-xs font-semibold text-pt-text"
+                }
+              >
+                {copied ? (
+                  <>
+                    <Check className="size-3.5" /> copied!
+                  </>
+                ) : (
+                  <>
+                    <Copy className="size-3.5" /> Copy link
+                  </>
+                )}
+              </span>
+            </button>
 
-          {takeTestHref ? (
-            <a
-              href={takeTestHref}
-              className="mt-3 inline-flex h-11 w-full items-center justify-center gap-2 rounded-full border border-pt-border text-sm font-semibold text-pt-text transition-colors hover:bg-white/5"
-            >
-              Take your own test
-              <ArrowRight className="size-4" />
-            </a>
-          ) : (
-            onRetake && (
+            {onRetake && (
               <button
                 type="button"
                 onClick={onRetake}
@@ -425,10 +416,10 @@ export function ResultsContent({
                 <RotateCcw className="size-4" />
                 Retake the test
               </button>
-            )
-          )}
-        </div>
-      </Reveal>
+            )}
+          </div>
+        </Reveal>
+      )}
     </div>
   )
 }

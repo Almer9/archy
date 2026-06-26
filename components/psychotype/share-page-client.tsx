@@ -20,7 +20,7 @@ function ViralBanner() {
         </p>
         <a
           href="/quiz"
-          className="flex w-full items-center justify-center gap-1.5 rounded-full bg-white px-4 py-1.5 text-sm font-semibold text-pt-bg transition-transform hover:scale-[1.02] active:scale-95 sm:w-auto"
+          className="flex w-full items-center justify-center gap-1.5 rounded-full border border-white/40 bg-transparent px-4 py-1.5 text-sm font-semibold text-white transition-colors hover:bg-white/10 active:scale-95 sm:w-auto"
         >
           Discover yours
           <ArrowRight className="size-4" />
@@ -38,7 +38,7 @@ function BottomStickyCta() {
   const [visible, setVisible] = useState(false)
 
   useEffect(() => {
-    const onScroll = () => setVisible(window.scrollY > 480)
+    const onScroll = () => setVisible(window.scrollY > 100)
     onScroll()
     window.addEventListener("scroll", onScroll, { passive: true })
     return () => window.removeEventListener("scroll", onScroll)
@@ -114,8 +114,27 @@ export function SharePageClient({
         shareUrl={shareUrl}
         copied={copied}
         onCopy={handleCopy}
-        takeTestHref="/quiz"
+        hideShareSection
       />
+
+      {/* Final conversion CTA */}
+      <section className="mx-auto max-w-[640px] px-5 pb-24 sm:pb-28">
+        <div className="flex flex-col items-center text-center">
+          <h2 className="text-pretty text-2xl font-bold text-pt-text sm:text-3xl">
+            Ready to discover your own type?
+          </h2>
+          <a
+            href="/quiz"
+            className="pt-gradient mt-6 flex h-12 w-full max-w-[400px] items-center justify-center gap-2 rounded-full px-6 text-base font-semibold text-white shadow-[0_12px_40px_-12px_rgba(139,92,246,0.7)] transition-transform hover:scale-[1.02] active:scale-95"
+          >
+            {"Take the test — it's free"}
+            <ArrowRight className="size-5" />
+          </a>
+          <p className="mt-4 text-sm font-medium text-pt-muted">
+            Free · No account needed · 2 min
+          </p>
+        </div>
+      </section>
 
       <BottomStickyCta />
     </main>

@@ -3,6 +3,7 @@
 import { useState } from "react"
 import { motion } from "framer-motion"
 import {
+  ArrowRight,
   Check,
   Compass,
   Copy,
@@ -160,12 +161,15 @@ export function ResultsContent({
   copied,
   onCopy,
   onRetake,
+  takeTestHref,
 }: {
   result: AnalysisResult
   shareUrl: string | null
   copied: boolean
   onCopy: () => void
   onRetake?: () => void
+  /** When provided (share view), shows a "Take your own test" link instead of Retake. */
+  takeTestHref?: string
 }) {
   const { archetype, ocean, strengths, growthAreas, careers } = result
 
@@ -403,15 +407,25 @@ export function ResultsContent({
             </span>
           </button>
 
-          {onRetake && (
-            <button
-              type="button"
-              onClick={onRetake}
+          {takeTestHref ? (
+            <a
+              href={takeTestHref}
               className="mt-3 inline-flex h-11 w-full items-center justify-center gap-2 rounded-full border border-pt-border text-sm font-semibold text-pt-text transition-colors hover:bg-white/5"
             >
-              <RotateCcw className="size-4" />
-              Retake the test
-            </button>
+              Take your own test
+              <ArrowRight className="size-4" />
+            </a>
+          ) : (
+            onRetake && (
+              <button
+                type="button"
+                onClick={onRetake}
+                className="mt-3 inline-flex h-11 w-full items-center justify-center gap-2 rounded-full border border-pt-border text-sm font-semibold text-pt-text transition-colors hover:bg-white/5"
+              >
+                <RotateCcw className="size-4" />
+                Retake the test
+              </button>
+            )
           )}
         </div>
       </Reveal>

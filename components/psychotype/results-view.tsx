@@ -3,6 +3,7 @@
 import { useState } from "react"
 import { motion } from "framer-motion"
 import {
+  ArrowRight,
   Check,
   Compass,
   Copy,
@@ -160,15 +161,18 @@ export function ResultsContent({
   copied,
   onCopy,
   onRetake,
-  hideShareSection,
+  isSharedView,
 }: {
   result: AnalysisResult
   shareUrl: string | null
   copied: boolean
   onCopy: () => void
   onRetake?: () => void
-  /** When true (share view), hides the "Share your result" card entirely. */
-  hideShareSection?: boolean
+  /**
+   * When true (share view), paywalls become "take your own test" CTAs and the
+   * "Share your result" card is hidden — the viewer is seeing someone else's result.
+   */
+  isSharedView?: boolean
 }) {
   const { archetype, ocean, strengths, growthAreas, careers } = result
 
@@ -279,13 +283,25 @@ export function ResultsContent({
           {/* soft paywall insert — feels like content */}
           <div className="mt-5 flex flex-col items-center gap-4 text-center">
             <div className="h-px w-full max-w-xs pt-gradient opacity-40" />
-            <p className="max-w-sm text-pretty text-sm leading-relaxed text-pt-text">
-              {`You have ${growthAreas.length} growth areas holding you back. Find out exactly why — and what to do about it.`}
-            </p>
-            <CtaButton
-              className="h-12 w-full max-w-[400px] text-sm"
-              label="Unlock deep analysis — $2.99"
-            />
+            {isSharedView ? (
+              <a
+                href="/quiz"
+                className="inline-flex h-12 w-full max-w-[400px] items-center justify-center gap-2 rounded-full border border-pt-border text-sm font-semibold text-pt-text transition-colors hover:bg-white/5"
+              >
+                Curious about your own growth areas? Take the test
+                <ArrowRight className="size-4 shrink-0" />
+              </a>
+            ) : (
+              <>
+                <p className="max-w-sm text-pretty text-sm leading-relaxed text-pt-text">
+                  {`You have ${growthAreas.length} growth areas holding you back. Find out exactly why — and what to do about it.`}
+                </p>
+                <CtaButton
+                  className="h-12 w-full max-w-[400px] text-sm"
+                  label="Unlock deep analysis — $2.99"
+                />
+              </>
+            )}
           </div>
         </div>
       </Reveal>
@@ -333,45 +349,68 @@ export function ResultsContent({
         </div>
       </Reveal>
 
-      {/* 6 — PREMIUM CTA */}
+      {/* 6 — PREMIUM CTA / TEST CTA (shared view) */}
       <Reveal delay={0.2}>
-        <div className="pt-gradient-border rounded-2xl p-6 shadow-[0_20px_60px_-30px_rgba(139,92,246,0.6)] sm:p-8">
-          <div className="text-center">
-            <h3 className="text-2xl font-bold text-pt-text">
-              Unlock your full report
+        {isSharedView ? (
+          <div className="pt-gradient-border rounded-2xl p-6 text-center shadow-[0_20px_60px_-30px_rgba(139,92,246,0.6)] sm:p-8">
+            <h3 className="text-pretty text-2xl font-bold text-pt-text">
+              What&apos;s YOUR personality type?
             </h3>
-            <p className="mt-2 text-sm font-semibold text-pt-muted">
-              $2.99 · One-time · No subscription
+            <p className="mx-auto mt-2 max-w-sm text-pretty text-sm leading-relaxed text-pt-muted">
+              Find your archetype, strengths, and career directions
+            </p>
+            <div className="mt-6 flex justify-center">
+              <a
+                href="/quiz"
+                className="pt-gradient flex h-12 w-full max-w-[400px] items-center justify-center gap-2 rounded-full px-6 text-base font-semibold text-white shadow-[0_12px_40px_-12px_rgba(139,92,246,0.7)] transition-transform hover:scale-[1.02] active:scale-95"
+              >
+                Take the free test
+                <ArrowRight className="size-5 shrink-0" />
+              </a>
+            </div>
+            <p className="mt-4 text-sm font-medium text-pt-muted">
+              Free · 2 min · No account needed
             </p>
           </div>
-          <ul className="mx-auto mt-6 flex max-w-sm flex-col gap-3">
-            {[
-              "All 3 growth areas fully decoded",
-              "All 5 career directions explained",
-              "Famous people with your pattern",
-              "PDF export of your profile",
-            ].map((item) => (
-              <li key={item} className="flex items-start gap-3">
-                <span className="mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full bg-white/5">
-                  <Check className="size-3.5 text-pt-purple" />
-                </span>
-                <span className="text-sm leading-relaxed text-pt-text">
-                  {item}
-                </span>
-              </li>
-            ))}
-          </ul>
-          <div className="mt-6 flex justify-center">
-            <CtaButton
-              className="h-12 w-full max-w-[400px] text-sm"
-              label="Unlock Full Report — $2.99"
-            />
+        ) : (
+          <div className="pt-gradient-border rounded-2xl p-6 shadow-[0_20px_60px_-30px_rgba(139,92,246,0.6)] sm:p-8">
+            <div className="text-center">
+              <h3 className="text-2xl font-bold text-pt-text">
+                Unlock your full report
+              </h3>
+              <p className="mt-2 text-sm font-semibold text-pt-muted">
+                $2.99 · One-time · No subscription
+              </p>
+            </div>
+            <ul className="mx-auto mt-6 flex max-w-sm flex-col gap-3">
+              {[
+                "All 3 growth areas fully decoded",
+                "All 5 career directions explained",
+                "Famous people with your pattern",
+                "PDF export of your profile",
+              ].map((item) => (
+                <li key={item} className="flex items-start gap-3">
+                  <span className="mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full bg-white/5">
+                    <Check className="size-3.5 text-pt-purple" />
+                  </span>
+                  <span className="text-sm leading-relaxed text-pt-text">
+                    {item}
+                  </span>
+                </li>
+              ))}
+            </ul>
+            <div className="mt-6 flex justify-center">
+              <CtaButton
+                className="h-12 w-full max-w-[400px] text-sm"
+                label="Unlock Full Report — $2.99"
+              />
+            </div>
           </div>
-        </div>
+        )}
       </Reveal>
 
       {/* 7 — SHARE */}
-      {!hideShareSection && (
+      {!isSharedView && (
         <Reveal delay={0.2}>
           <div className="rounded-2xl border border-pt-border bg-pt-card p-6 text-center">
             <h3 className="text-lg font-bold text-pt-text">Share your result</h3>

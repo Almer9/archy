@@ -12,21 +12,21 @@ import { type AnalysisResult, sampleResult } from "@/lib/analysis"
 
 function ViralBanner() {
   return (
-    <div className="pt-gradient sticky top-0 z-50">
-      <div className="mx-auto flex h-14 max-w-[640px] flex-col items-center justify-center gap-1.5 px-5 sm:h-12 sm:flex-row sm:justify-between sm:gap-3">
-        <p className="flex items-center gap-1.5 text-center text-sm font-medium text-white">
+    <a
+      href="/quiz"
+      className="pt-gradient sticky top-0 z-50 block transition-opacity hover:opacity-90"
+    >
+      <div className="mx-auto flex h-12 max-w-[640px] items-center justify-between gap-3 px-5">
+        <span className="flex min-w-0 items-center gap-1.5 text-sm font-semibold text-white">
           <Sparkles className="size-4 shrink-0" aria-hidden="true" />
-          Someone shared their result with you
-        </p>
-        <a
-          href="/quiz"
-          className="flex w-full items-center justify-center gap-1.5 rounded-full border border-white/40 bg-transparent px-4 py-1.5 text-sm font-semibold text-white transition-colors hover:bg-white/10 active:scale-95 sm:w-auto"
-        >
+          <span className="truncate">Someone shared their result with you</span>
+        </span>
+        <span className="flex shrink-0 items-center gap-1 text-sm font-semibold text-white">
           Discover yours
           <ArrowRight className="size-4" />
-        </a>
+        </span>
       </div>
-    </div>
+    </a>
   )
 }
 
@@ -114,27 +114,8 @@ export function SharePageClient({
         shareUrl={shareUrl}
         copied={copied}
         onCopy={handleCopy}
-        hideShareSection
+        isSharedView
       />
-
-      {/* Final conversion CTA */}
-      <section className="mx-auto max-w-[640px] px-5 pb-24 sm:pb-28">
-        <div className="flex flex-col items-center text-center">
-          <h2 className="text-pretty text-2xl font-bold text-pt-text sm:text-3xl">
-            Ready to discover your own type?
-          </h2>
-          <a
-            href="/quiz"
-            className="pt-gradient mt-6 flex h-12 w-full max-w-[400px] items-center justify-center gap-2 rounded-full px-6 text-base font-semibold text-white shadow-[0_12px_40px_-12px_rgba(139,92,246,0.7)] transition-transform hover:scale-[1.02] active:scale-95"
-          >
-            {"Take the test — it's free"}
-            <ArrowRight className="size-5" />
-          </a>
-          <p className="mt-4 text-sm font-medium text-pt-muted">
-            Free · No account needed · 2 min
-          </p>
-        </div>
-      </section>
 
       <BottomStickyCta />
     </main>
